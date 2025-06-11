@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './page.module.css';
 import { useGame } from './hooks/useGame';
 import { validateName, validateAnswer } from './utils/game';
@@ -24,8 +24,23 @@ export default function Home() {
   const [error, setError] = useState('');
   const [currentAnswer, setCurrentAnswer] = useState('');
   const [showHowToPlay, setShowHowToPlay] = useState(true);
+  const [showCountdown, setShowCountdown] = useState(false);
+  const [countdown, setCountdown] = useState(5);
 
   const { createGame, isLoading } = useGame();
+
+  useEffect(() => {
+    if (showCountdown && countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (showCountdown && countdown === 0) {
+      setShowCountdown(false);
+      setStep('boyName');
+      setCountdown(5); // Reset for next time
+    }
+  }, [showCountdown, countdown]);
 
   const questions = [
     { step: 'boyName', label: 'Name a Boy Name That Starts With B', field: 'boyName' as keyof PlayerAnswers },
@@ -43,7 +58,7 @@ export default function Home() {
       return;
     }
     setError('');
-    setStep('boyName');
+    setShowCountdown(true);
     setCurrentAnswer('');
   };
 
@@ -103,6 +118,28 @@ export default function Home() {
   if (step === 'input') {
     return (
       <>
+        {showCountdown && (
+          <div 
+            className={styles.countdownOverlay}
+            style={{
+              backdropFilter: countdown <= 2 ? `blur(${6 - (2 - countdown) * 3}px)` : `blur(10px)`,
+              background: `rgba(0, 0, 0, ${0.8 - (5 - countdown) * 0.1})`
+            }}
+          >
+            <div className={styles.countdownContent}>
+              <div className={styles.countdownText}>GAME STARTING</div>
+              <div className={styles.countdownIn}>IN</div>
+              <div 
+                className={`${styles.countdownNumber} ${styles[`countdown${countdown}`]}`}
+                style={{
+                  color: countdown <= 2 ? '#ff0000' : '#ffffff'
+                }}
+              >
+                {countdown}
+              </div>
+            </div>
+          </div>
+        )}
         {showHowToPlay && (
           <div 
             className={styles.overlay}

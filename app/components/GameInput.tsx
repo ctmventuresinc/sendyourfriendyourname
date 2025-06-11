@@ -28,6 +28,11 @@ export default function GameInput({
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !disabled) {
+              onContinue();
+            }
+          }}
           className={styles.input}
           placeholder="type here..."
         />

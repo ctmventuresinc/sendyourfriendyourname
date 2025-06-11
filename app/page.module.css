@@ -159,6 +159,107 @@
   background: #9333ea;
 }
 
+.countdownOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  transition: backdrop-filter 1s ease-out, background 1s ease-out;
+}
+
+.countdownContent {
+  text-align: center;
+  color: white;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.countdownText {
+  font-size: 8vw;
+  font-weight: 900;
+  margin-bottom: 2vh;
+  letter-spacing: 0.5vw;
+  text-transform: uppercase;
+}
+
+.countdownIn {
+  font-size: 4vw;
+  font-weight: 600;
+  margin-bottom: 3vh;
+  opacity: 0.9;
+  letter-spacing: 0.2vw;
+}
+
+.countdownNumber {
+  font-size: 75vw;
+  font-weight: 900;
+  line-height: 0.7;
+  transition: color 1s ease-out;
+}
+
+.countdown5 {
+  animation: countdownBounce5 1s ease-in-out infinite;
+}
+
+.countdown4 {
+  animation: countdownBounce4 1s ease-in-out infinite;
+}
+
+.countdown3 {
+  animation: countdownBounce3 1s ease-in-out infinite;
+}
+
+.countdown2 {
+  animation: countdownBounce2 1s ease-in-out infinite;
+}
+
+.countdown1 {
+  animation: countdownBounce1 1s ease-in-out infinite;
+}
+
+@keyframes countdownBounce5 {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.15) rotate(2deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes countdownBounce4 {
+  0% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.1) rotate(-1deg); }
+  75% { transform: scale(1.2) rotate(1deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes countdownBounce3 {
+  0% { transform: scale(1) skew(0deg); }
+  33% { transform: scale(1.1) skew(2deg); }
+  66% { transform: scale(1.25) skew(-1deg); }
+  100% { transform: scale(1) skew(0deg); }
+}
+
+@keyframes countdownBounce2 {
+  0% { transform: scale(1) rotateY(0deg); }
+  50% { transform: scale(1.3) rotateY(5deg); }
+  100% { transform: scale(1) rotateY(0deg); }
+}
+
+@keyframes countdownBounce1 {
+  0% { transform: scale(1) rotateZ(0deg) rotateY(0deg); }
+  25% { transform: scale(1.4) rotateZ(-5deg) rotateY(10deg); }
+  50% { transform: scale(1.5) rotateZ(5deg) rotateY(-5deg); }
+  75% { transform: scale(1.6) rotateZ(-3deg) rotateY(8deg); }
+  100% { transform: scale(1) rotateZ(0deg) rotateY(0deg); }
+}
+
 .container {
   display: flex;
   flex-direction: column;
