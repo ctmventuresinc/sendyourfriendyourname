@@ -52,12 +52,27 @@ export default function Home() {
     }
   };
 
-  const copyUrl = async () => {
-    try {
-      await navigator.clipboard.writeText(generatedUrl);
-      alert('URL copied to clipboard!');
-    } catch (err) {
-      console.error('Failed to copy URL:', err);
+  const shareUrl = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Challenge me!',
+          url: generatedUrl,
+        });
+      } catch (err: any) {
+        // Ignore if user cancels share sheet
+        if (err.name !== 'AbortError') {
+          console.error('Failed to share:', err);
+        }
+      }
+    } else {
+      // Fallback to clipboard
+      try {
+        await navigator.clipboard.writeText(generatedUrl);
+        alert('URL copied to clipboard!');
+      } catch (err) {
+        console.error('Failed to copy URL:', err);
+      }
     }
   };
 
@@ -94,24 +109,15 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <h1 className={styles.displayName}>{name}</h1>
-        <p className={styles.urlText}>Your URL:</p>
-        <div className={styles.urlContainer}>
-          <input
-            type="text"
-            value={generatedUrl}
-            readOnly
-            className={styles.urlInput}
-          />
-          <button
-            type="button"
-            onClick={copyUrl}
-            className={styles.copyButton}
-          >
-            Copy
-          </button>
-        </div>
+        <h1 className={styles.displayName}>challenge your friend</h1>
       </div>
+      <button
+        type="button"
+        onClick={shareUrl}
+        className={styles.submitButton}
+      >
+        send to friend
+      </button>
     </div>
   );
 }
