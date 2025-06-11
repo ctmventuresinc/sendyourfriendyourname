@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import styles from '../page.module.css';
+import GameInput from '../components/GameInput';
 
 export default function NamePage() {
   const params = useParams();
@@ -69,67 +70,45 @@ export default function NamePage() {
 
   if (step === 'input') {
     return (
-      <div className={styles.container}>
-        <div className={styles.content}>
-          <label htmlFor="friendName" className={styles.label}>
-            enter ur name
-          </label>
-          <input
-            id="friendName"
-            type="text"
-            value={friendName}
-            onChange={(e) => setFriendName(e.target.value)}
-            className={styles.input}
-            placeholder="your name here..."
-          />
-        </div>
-        <button
-          type="button"
-          onClick={handleNameContinue}
-          className={styles.submitButton}
-          disabled={!friendName.trim()}
-        >
-          Continue
-        </button>
-      </div>
+      <GameInput
+        label="enter ur name"
+        value={friendName}
+        onChange={setFriendName}
+        placeholder="your name here..."
+        onContinue={handleNameContinue}
+        buttonText="Continue"
+        disabled={!friendName.trim()}
+      />
     );
   }
 
   if (step === 'animal') {
     return (
-      <div className={styles.container}>
-        <div className={styles.content}>
-          <label htmlFor="friendAnimal" className={styles.label}>
-            enter an animal that starts with B
-          </label>
-          <input
-            id="friendAnimal"
-            type="text"
-            value={friendAnimal}
-            onChange={(e) => setFriendAnimal(e.target.value)}
-            className={styles.input}
-            placeholder="bear, bird, butterfly..."
-          />
-        </div>
-        <button
-          type="button"
-          onClick={handleAnimalContinue}
-          className={styles.submitButton}
-          disabled={!friendAnimal.trim() || !friendAnimal.toLowerCase().startsWith('b')}
-        >
-          Continue
-        </button>
-      </div>
+      <GameInput
+        label="enter an animal that starts with B"
+        value={friendAnimal}
+        onChange={setFriendAnimal}
+        placeholder="type here..."
+        onContinue={handleAnimalContinue}
+        buttonText="Continue"
+        disabled={!friendAnimal.trim() || !friendAnimal.toLowerCase().startsWith('b')}
+      />
     );
   }
 
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <h1 className={styles.displayName}>Results!</h1>
+        <h1 className={styles.displayName}>Results</h1>
         <p className={styles.label}>{gameData.name} said: {gameData.animal}</p>
         <p className={styles.label}>{friendName} said: {friendAnimal}</p>
       </div>
+      <button
+        type="button"
+        className={styles.submitButton}
+      >
+        send to {friendName}
+      </button>
     </div>
   );
 }

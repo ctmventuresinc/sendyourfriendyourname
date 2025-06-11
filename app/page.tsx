@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import styles from './page.module.css';
+import GameInput from './components/GameInput';
 
 export default function Home() {
   const [name, setName] = useState('');
   const [animal, setAnimal] = useState('');
-  const [step, setStep] = useState<'input' | 'animal' | 'display' | 'generated'>('input');
+  const [step, setStep] = useState<'input' | 'animal' | 'generated'>('input');
   const [generatedUrl, setGeneratedUrl] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const handleContinue = () => {
     if (name.trim()) {
@@ -17,11 +19,12 @@ export default function Home() {
 
   const handleAnimalContinue = () => {
     if (animal.trim() && animal.toLowerCase().startsWith('b')) {
-      setStep('display');
+      generateUrl();
     }
   };
 
   const generateUrl = async () => {
+    setIsGenerating(true);
     const uniqueId = Math.random().toString(36).substring(2, 15);
     const url = `${window.location.origin}/${uniqueId}`;
     setGeneratedUrl(url);
@@ -44,6 +47,8 @@ export default function Home() {
     } catch (error) {
       console.error('Error storing name:', error);
       alert('Failed to generate URL. Please try again.');
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -58,76 +63,33 @@ export default function Home() {
 
   if (step === 'input') {
     return (
-      <div className={styles.container}>
-        <div className={styles.content}>
-          <label htmlFor="name" className={styles.label}>
-            enter ur name
-          </label>
-          <input
-            id="name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className={styles.input}
-            placeholder="your name here..."
-          />
-        </div>
-        <button
-          type="button"
-          onClick={handleContinue}
-          className={styles.submitButton}
-          disabled={!name.trim()}
-        >
-          Continue
-        </button>
-      </div>
+      <GameInput
+        label="enter ur name"
+        value={name}
+        onChange={setName}
+        placeholder="your name here..."
+        onContinue={handleContinue}
+        buttonText="Continue"
+        disabled={!name.trim()}
+      />
     );
   }
 
   if (step === 'animal') {
     return (
-      <div className={styles.container}>
-        <div className={styles.content}>
-          <label htmlFor="animal" className={styles.label}>
-            enter an animal that starts with B
-          </label>
-          <input
-            id="animal"
-            type="text"
-            value={animal}
-            onChange={(e) => setAnimal(e.target.value)}
-            className={styles.input}
-            placeholder="bear, bird, butterfly..."
-          />
-        </div>
-        <button
-          type="button"
-          onClick={handleAnimalContinue}
-          className={styles.submitButton}
-          disabled={!animal.trim() || !animal.toLowerCase().startsWith('b')}
-        >
-          Continue
-        </button>
-      </div>
+      <GameInput
+        label="enter an animal that starts with B"
+        value={animal}
+        onChange={setAnimal}
+        placeholder="type here..."
+        onContinue={handleAnimalContinue}
+        buttonText="Continue"
+        disabled={!animal.trim() || !animal.toLowerCase().startsWith('b')}
+      />
     );
   }
 
-  if (step === 'display') {
-    return (
-      <div className={styles.container}>
-        <div className={styles.content}>
-          <h1 className={styles.displayName}>{name}</h1>
-        </div>
-        <button
-          type="button"
-          onClick={generateUrl}
-          className={styles.submitButton}
-        >
-          Generate URL
-        </button>
-      </div>
-    );
-  }
+
 
   return (
     <div className={styles.container}>
