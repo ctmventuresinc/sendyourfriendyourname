@@ -23,6 +23,7 @@ export default function Home() {
   const [gameUrl, setGameUrl] = useState('');
   const [error, setError] = useState('');
   const [currentAnswer, setCurrentAnswer] = useState('');
+  const [showHowToPlay, setShowHowToPlay] = useState(true);
 
   const { createGame, isLoading } = useGame();
 
@@ -101,17 +102,57 @@ export default function Home() {
 
   if (step === 'input') {
     return (
-      <main className={styles.main}>
-        <GameInput
-          label="What's your name?"
-          value={name}
-          onChange={setName}
-          onContinue={handleNameSubmit}
-          buttonText="Continue"
-          disabled={!name.trim() || isLoading}
-        />
-        {error && <p className={styles.error}>{error}</p>}
-      </main>
+      <>
+        {showHowToPlay && (
+          <div 
+            className={styles.overlay}
+            onClick={() => setShowHowToPlay(false)}
+          >
+            <div 
+              className={styles.modal}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className={styles.modalHeader}>
+                <h2>How to Play</h2>
+                <button 
+                  className={styles.closeButton}
+                  onClick={() => setShowHowToPlay(false)}
+                >
+                  ✕
+                </button>
+              </div>
+              <div className={styles.modalContent}>
+                <ul>
+                  <li><strong>Answer 6 Questions:</strong> You'll be asked to name things that start with the letter "B" - like a boy's name, girl's name, animal, place, thing, and movie.</li>
+                </ul>
+                <div className={styles.scoring}>
+                  <h3>Scoring:</h3>
+                  <div className={styles.scoreItem}>
+                    <span className={styles.uniqueScore}>+10 points</span> for unique answers (you both thought of different things)
+                  </div>
+                  <div className={styles.scoreItem}>
+                    <span className={styles.matchScore}>+5 points</span> for matching answers (great minds think alike!)
+                  </div>
+                  <div className={styles.scoreItem}>
+                    <span className={styles.noScore}>0 points</span> for blank answers
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        <main className={styles.main}>
+          <GameInput
+            label="What's your name?"
+            value={name}
+            onChange={setName}
+            onContinue={handleNameSubmit}
+            buttonText="Continue"
+            disabled={!name.trim() || isLoading}
+          />
+          {error && <p className={styles.error}>{error}</p>}
+        </main>
+      </>
     );
   }
 

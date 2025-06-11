@@ -154,69 +154,97 @@ export default function NamePage() {
   }
 
   if (step === 'result') {
+    const getScoreReasonClass = (reason: string) => {
+      if (reason.includes('Different')) return styles.unique;
+      if (reason.includes('Same')) return styles.same;
+      if (reason.includes('empty') || reason.includes('Only')) return styles.noAnswer;
+      return '';
+    };
+
+    const getScoreReasonText = (reason: string) => {
+      if (reason.includes('Different')) return 'unique';
+      if (reason.includes('Same')) return 'same';
+      if (reason.includes('empty')) return 'no answer';
+      if (reason.includes('Only Player 1')) return 'only you';
+      if (reason.includes('Only Player 2')) return 'only friend';
+      return reason.toLowerCase();
+    };
+
     return (
       <main className={styles.main}>
-        <div className={styles.container}>
-          <div className={styles.content}>
-            <h1 className={styles.title}>Results</h1>
-            {error && <p className={styles.error}>{error}</p>}
-            
-            <div style={{ marginBottom: '30px' }}>
-              <h2>Answers:</h2>
+        <div className={styles.resultsContainer}>
+          {error && <p className={styles.error}>{error}</p>}
+          
+          <div className={styles.scoreHeader}>
+            {(() => {
+              const player1Score = gameData?.results?.player1Score || 0;
+              const player2Score = gameData?.results?.player2Score || 0;
               
-              <div style={{ marginBottom: '20px' }}>
-                <h3>Boy Name:</h3>
-                <p>{gameData?.player1.name}: {gameData?.player1.answers.boyName}</p>
-                <p>{friendName}: {friendAnswers.boyName}</p>
-              </div>
-              
-              <div style={{ marginBottom: '20px' }}>
-                <h3>Girl Name:</h3>
-                <p>{gameData?.player1.name}: {gameData?.player1.answers.girlName}</p>
-                <p>{friendName}: {friendAnswers.girlName}</p>
-              </div>
-              
-              <div style={{ marginBottom: '20px' }}>
-                <h3>Animal:</h3>
-                <p>{gameData?.player1.name}: {gameData?.player1.answers.animal}</p>
-                <p>{friendName}: {friendAnswers.animal}</p>
-              </div>
-              
-              <div style={{ marginBottom: '20px' }}>
-                <h3>Place:</h3>
-                <p>{gameData?.player1.name}: {gameData?.player1.answers.place}</p>
-                <p>{friendName}: {friendAnswers.place}</p>
-              </div>
-              
-              <div style={{ marginBottom: '20px' }}>
-                <h3>Thing:</h3>
-                <p>{gameData?.player1.name}: {gameData?.player1.answers.thing}</p>
-                <p>{friendName}: {friendAnswers.thing}</p>
-              </div>
-              
-              <div style={{ marginBottom: '20px' }}>
-                <h3>Movie:</h3>
-                <p>{gameData?.player1.name}: {gameData?.player1.answers.movie}</p>
-                <p>{friendName}: {friendAnswers.movie}</p>
-              </div>
-            </div>
-            
-            {gameData?.results && (
-              <div>
-                <h2>Score:</h2>
-                <p>{gameData.player1.name}: {gameData.results.player1Score} points</p>
-                <p>{friendName}: {gameData.results.player2Score} points</p>
-                
-                <h3>Breakdown:</h3>
-                {gameData.results.breakdown.map((item, index) => (
-                  <div key={index} style={{ marginBottom: '10px' }}>
-                    <strong>{item.category}:</strong> {item.reason} 
-                    ({gameData.player1.name}: {item.player1Points}, {friendName}: {item.player2Points})
-                  </div>
-                ))}
-              </div>
-            )}
+              if (player1Score > player2Score) {
+                return (
+                  <h1 className={styles.scoreTitle}>
+                    {gameData?.player1.name} Wins! {player1Score} points
+                  </h1>
+                );
+              } else if (player2Score > player1Score) {
+                return (
+                  <h1 className={styles.scoreTitle}>
+                    {friendName} Wins! {player2Score} points
+                  </h1>
+                );
+              } else {
+                return (
+                  <h1 className={styles.scoreTitle}>
+                    It's a Tie! {player1Score} points each
+                  </h1>
+                );
+              }
+            })()}
+            <p className={styles.scoreSubtitle}>
+              {gameData?.player1.name}: {gameData?.results?.player1Score || 0} pts • {friendName}: {gameData?.results?.player2Score || 0} pts
+            </p>
           </div>
+          
+          <div className={styles.resultsGrid}>
+            {gameData?.results?.breakdown.map((item, index) => {
+              const categories = [
+                { name: 'Boy Name', field: 'boyName' as keyof PlayerAnswers },
+                { name: 'Girl Name', field: 'girlName' as keyof PlayerAnswers },
+                { name: 'Animal', field: 'animal' as keyof PlayerAnswers },
+                { name: 'Place', field: 'place' as keyof PlayerAnswers },
+                { name: 'Thing', field: 'thing' as keyof PlayerAnswers },
+                { name: 'Movie', field: 'movie' as keyof PlayerAnswers }
+              ];
+              
+              const category = categories[index];
+              const player1Answer = gameData?.player1.answers[category.field] || '—';
+              const player2Answer = friendAnswers[category.field] || '—';
+              
+              return (
+                <div key={index} className={styles.resultRow}>
+                  <div className={styles.categoryInfo}>
+                    <h3 className={styles.categoryName}>{item.category}</h3>
+                    <p className={styles.answersComparison}>
+                      {gameData?.player1.name}: {player1Answer} • {friendName}: {player2Answer}
+                    </p>
+                  </div>
+                  <div className={styles.scoreInfo}>
+                    <p className={`${styles.scoreReason} ${getScoreReasonClass(item.reason)}`}>
+                      {getScoreReasonText(item.reason)} {item.player2Points} pts
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          
+          <button className={styles.shareButton}>
+            📤 Share your Score
+          </button>
+          
+          <p className={styles.nextPuzzle}>
+            Next puzzle in: 7h 24m 2s
+          </p>
         </div>
       </main>
     );
