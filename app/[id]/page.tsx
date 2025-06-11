@@ -10,13 +10,26 @@ export default function NamePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const id = params.id as string;
-    if (id) {
-      // Get the name from localStorage
-      const storedName = localStorage.getItem(`name_${id}`);
-      setName(storedName);
-      setLoading(false);
-    }
+    const fetchName = async () => {
+      const id = params.id as string;
+      if (id) {
+        try {
+          const response = await fetch(`/api/get-name/${id}`);
+          if (response.ok) {
+            const data = await response.json();
+            setName(data.name);
+          } else {
+            setName(null);
+          }
+        } catch (error) {
+          console.error('Error fetching name:', error);
+          setName(null);
+        }
+        setLoading(false);
+      }
+    };
+
+    fetchName();
   }, [params.id]);
 
   if (loading) {

@@ -14,15 +14,30 @@ export default function Home() {
     }
   };
 
-  const generateUrl = () => {
+  const generateUrl = async () => {
     const uniqueId = Math.random().toString(36).substring(2, 15);
     const url = `${window.location.origin}/${uniqueId}`;
     setGeneratedUrl(url);
     
-    // Store the name for this URL in localStorage
-    localStorage.setItem(`name_${uniqueId}`, name);
-    
-    setStep('generated');
+    try {
+      // Store the name for this URL in the database
+      const response = await fetch('/api/store-name', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: uniqueId, name }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to store name');
+      }
+      
+      setStep('generated');
+    } catch (error) {
+      console.error('Error storing name:', error);
+      alert('Failed to generate URL. Please try again.');
+    }
   };
 
   const copyUrl = async () => {
