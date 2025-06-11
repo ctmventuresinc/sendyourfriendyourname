@@ -141,6 +141,24 @@
   margin: 20px 0 0 0 !important;
 }
 
+.startButton {
+  background: #a78bfa;
+  color: black;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 20px;
+  transition: background-color 0.2s ease;
+}
+
+.startButton:hover {
+  background: #9333ea;
+}
+
 .container {
   display: flex;
   flex-direction: column;

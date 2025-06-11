@@ -137,6 +137,12 @@ export default function Home() {
                     <span className={styles.noScore}>0 points</span> for blank answers
                   </div>
                 </div>
+                <button 
+                  className={styles.startButton}
+                  onClick={() => setShowHowToPlay(false)}
+                >
+                  Start
+                </button>
               </div>
             </div>
           </div>
