@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import styles from './page.module.css';
 import { useGame } from './hooks/useGame';
-import { validateName, validateAllAnswers } from './utils/game';
+import { validateName, validateAnswer } from './utils/game';
 import { PlayerAnswers } from './types/game';
 import GameInput from './components/GameInput';
+
+type Step = 'input' | 'boyName' | 'girlName' | 'animal' | 'place' | 'thing' | 'movie' | 'generated';
 
 export default function Home() {
   const [name, setName] = useState('');
@@ -17,31 +19,67 @@ export default function Home() {
     thing: '',
     movie: ''
   });
-  const [step, setStep] = useState<'input' | 'answers' | 'generated'>('input');
+  const [step, setStep] = useState<Step>('input');
   const [gameUrl, setGameUrl] = useState('');
   const [error, setError] = useState('');
+  const [currentAnswer, setCurrentAnswer] = useState('');
 
   const { createGame, isLoading } = useGame();
 
-  const handleNameSubmit = async () => {
+  const questions = [
+    { step: 'boyName', label: 'Name a Boy Name That Starts With B', field: 'boyName' as keyof PlayerAnswers },
+    { step: 'girlName', label: 'Name a Girl Name That Starts With B', field: 'girlName' as keyof PlayerAnswers },
+    { step: 'animal', label: 'Name an Animal That Starts With B', field: 'animal' as keyof PlayerAnswers },
+    { step: 'place', label: 'Name a Place That Starts With B', field: 'place' as keyof PlayerAnswers },
+    { step: 'thing', label: 'Name a Thing That Starts With B', field: 'thing' as keyof PlayerAnswers },
+    { step: 'movie', label: 'Name a Movie That Starts With B', field: 'movie' as keyof PlayerAnswers }
+  ];
+
+  const handleNameSubmit = () => {
     const validation = validateName(name);
     if (!validation.isValid) {
       setError(validation.error || 'Invalid name');
       return;
     }
     setError('');
-    setStep('answers');
+    setStep('boyName');
+    setCurrentAnswer('');
   };
 
-  const handleAnswersSubmit = async () => {
-    const answersValidation = validateAllAnswers(answers);
-    
-    if (!answersValidation.isValid) {
-      setError(answersValidation.error || 'Invalid answers');
+  const handleAnswerSubmit = () => {
+    const validation = validateAnswer(currentAnswer);
+    if (!validation.isValid) {
+      setError(validation.error || 'Invalid answer');
       return;
     }
     
-    const result = await createGame(name, answers);
+    const currentQuestion = questions.find(q => q.step === step);
+    if (currentQuestion) {
+      setAnswers(prev => ({
+        ...prev,
+        [currentQuestion.field]: currentAnswer
+      }));
+    }
+    
+    setError('');
+    setCurrentAnswer('');
+    
+    const currentIndex = questions.findIndex(q => q.step === step);
+    if (currentIndex < questions.length - 1) {
+      setStep(questions[currentIndex + 1].step as Step);
+    } else {
+      handleSubmitAllAnswers();
+    }
+  };
+
+  const handleSubmitAllAnswers = async () => {
+    const finalAnswers = { ...answers };
+    const currentQuestion = questions.find(q => q.step === step);
+    if (currentQuestion) {
+      finalAnswers[currentQuestion.field] = currentAnswer;
+    }
+    
+    const result = await createGame(name, finalAnswers);
     
     if (result.success) {
       const url = `${window.location.origin}/${result.gameId}`;
@@ -61,78 +99,69 @@ export default function Home() {
     }
   };
 
-  const allAnswersFilled = Object.values(answers).every(answer => answer.trim() !== '');
-
   if (step === 'input') {
     return (
       <main className={styles.main}>
-        <div className={styles.container}>
-          <div className={styles.content}>
-            <label htmlFor="name" className={styles.label}>
-              What's your name?
-            </label>
-            <input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className={styles.input}
-              placeholder="Enter your name"
-            />
-          </div>
-          <button
-            type="button"
-            onClick={handleNameSubmit}
-            className={styles.submitButton}
-            disabled={!name.trim() || isLoading}
-          >
-            Continue
-          </button>
-        </div>
-        {error && <p className={styles.error}>{error}</p>}
-      </main>
-    );
-  }
-
-  if (step === 'answers') {
-    return (
-      <main className={styles.main}>
         <GameInput
-          answers={answers}
-          onChange={setAnswers}
-          onContinue={handleAnswersSubmit}
-          buttonText="Create Game"
-          disabled={!allAnswersFilled || isLoading}
+          label="What's your name?"
+          value={name}
+          onChange={setName}
+          onContinue={handleNameSubmit}
+          buttonText="Continue"
+          disabled={!name.trim() || isLoading}
         />
         {error && <p className={styles.error}>{error}</p>}
       </main>
     );
   }
 
-  return (
-    <main className={styles.main}>
-      <div className={styles.container}>
-        <div className={styles.content}>
-          <h1 className={styles.title}>Game Created!</h1>
-          <p className={styles.description}>
-            Send this link to your friend:
-          </p>
-          <div className={styles.urlContainer}>
-            <input
-              type="text"
-              value={gameUrl}
-              readOnly
-              className={styles.urlInput}
-            />
-            <button
-              onClick={copyToClipboard}
-              className={styles.copyButton}
-            >
-              Copy
-            </button>
+  if (step === 'generated') {
+    return (
+      <main className={styles.main}>
+        <div className={styles.container}>
+          <div className={styles.content}>
+            <h1 className={styles.title}>Game Created!</h1>
+            <p className={styles.description}>
+              Send this link to your friend:
+            </p>
+            <div className={styles.urlContainer}>
+              <input
+                type="text"
+                value={gameUrl}
+                readOnly
+                className={styles.urlInput}
+              />
+              <button
+                onClick={copyToClipboard}
+                className={styles.copyButton}
+              >
+                Copy
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </main>
-  );
+      </main>
+    );
+  }
+
+  const currentQuestion = questions.find(q => q.step === step);
+  if (currentQuestion) {
+    const isLastQuestion = questions.findIndex(q => q.step === step) === questions.length - 1;
+    
+    return (
+      <main className={styles.main}>
+        <GameInput
+          label={currentQuestion.label}
+          value={currentAnswer}
+          onChange={setCurrentAnswer}
+          onContinue={handleAnswerSubmit}
+          buttonText={isLastQuestion ? (isLoading ? "Creating..." : "Create Game") : "Continue"}
+          disabled={!currentAnswer.trim() || isLoading}
+        />
+        {error && <p className={styles.error}>{error}</p>}
+      </main>
+    );
+  }
+
+  return null;
 }
