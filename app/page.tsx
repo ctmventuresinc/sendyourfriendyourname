@@ -200,31 +200,95 @@ export default function Home() {
   }
 
   if (step === 'generated') {
+    const categories = [
+      { name: 'Boy Name', field: 'boyName' as keyof PlayerAnswers },
+      { name: 'Girl Name', field: 'girlName' as keyof PlayerAnswers },
+      { name: 'Animal', field: 'animal' as keyof PlayerAnswers },
+      { name: 'Place', field: 'place' as keyof PlayerAnswers },
+      { name: 'Thing', field: 'thing' as keyof PlayerAnswers },
+      { name: 'Movie', field: 'movie' as keyof PlayerAnswers }
+    ];
+
+    // Calculate player's total score (assuming 10 points for each answer for now)
+    const playerScore = Object.values(answers).filter(answer => answer.trim()).length * 10;
+
     return (
-      <main className={styles.main}>
-        <div className={styles.container}>
-          <div className={styles.content}>
-            <h1 className={styles.title}>Game Created!</h1>
-            <p className={styles.description}>
-              Send this link to your friend:
-            </p>
-            <div className={styles.urlContainer}>
-              <input
-                type="text"
-                value={gameUrl}
-                readOnly
-                className={styles.urlInput}
-              />
-              <button
-                onClick={copyToClipboard}
-                className={styles.copyButton}
-              >
-                Copy
-              </button>
+      <div className={styles.resultsPage}>
+        <div className={styles.starsContainer}>
+          <div className={styles.star1}>⭐</div>
+          <div className={styles.star2}>⭐</div>
+          <div className={styles.star3}>⭐</div>
+          <div className={styles.star4}>⭐</div>
+          <div className={styles.star5}>⭐</div>
+        </div>
+        
+        <div className={styles.resultsContent}>
+          <div className={styles.playersContainer}>
+            <div className={styles.player}>
+              <h2 className={styles.playerName}>{name.toUpperCase()}</h2>
+              <p className={styles.playerScore}>Score: {playerScore}</p>
+            </div>
+            <div className={styles.player}>
+              <h2 className={styles.playerName}>YOUR FRIEND</h2>
+              <p className={styles.playerScore}>Score: ???</p>
             </div>
           </div>
+
+          <div className={styles.waitingIndicator}>
+            <div className={styles.waitingDot}></div>
+            <span>Waiting for opponent</span>
+          </div>
+
+          <div className={styles.answersContainer}>
+            {categories.map((category) => {
+              const playerAnswer = answers[category.field] || '';
+              
+              return (
+                <div key={category.field} className={styles.answerRow}>
+                  <div className={styles.answerLeft}>
+                    <div className={styles.answerBox}>
+                      {playerAnswer.toUpperCase()}
+                    </div>
+                    <div className={styles.scoreBox}>
+                      +10
+                    </div>
+                  </div>
+                  <div className={styles.answerRight}>
+                    <div className={`${styles.answerBox} ${styles.unknownAnswer}`}>
+                      ???
+                    </div>
+                    <div className={`${styles.scoreBox} ${styles.unknownScore}`}>
+                      +?
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <button 
+            className={styles.shareScoreButton}
+            onClick={copyToClipboard}
+          >
+            CHALLENGE YOUR FRIEND
+          </button>
+          
+          <div className={styles.urlContainer}>
+            <input
+              type="text"
+              value={gameUrl}
+              readOnly
+              className={styles.urlInput}
+            />
+            <button
+              onClick={copyToClipboard}
+              className={styles.copyButton}
+            >
+              Copy
+            </button>
+          </div>
         </div>
-      </main>
+      </div>
     );
   }
 
