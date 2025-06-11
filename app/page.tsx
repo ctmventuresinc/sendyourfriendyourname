@@ -5,11 +5,18 @@ import styles from './page.module.css';
 
 export default function Home() {
   const [name, setName] = useState('');
-  const [step, setStep] = useState<'input' | 'display' | 'generated'>('input');
+  const [animal, setAnimal] = useState('');
+  const [step, setStep] = useState<'input' | 'animal' | 'display' | 'generated'>('input');
   const [generatedUrl, setGeneratedUrl] = useState('');
 
   const handleContinue = () => {
     if (name.trim()) {
+      setStep('animal');
+    }
+  };
+
+  const handleAnimalContinue = () => {
+    if (animal.trim() && animal.toLowerCase().startsWith('b')) {
       setStep('display');
     }
   };
@@ -26,7 +33,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id: uniqueId, name }),
+        body: JSON.stringify({ id: uniqueId, name, animal }),
       });
       
       if (!response.ok) {
@@ -70,6 +77,34 @@ export default function Home() {
           onClick={handleContinue}
           className={styles.submitButton}
           disabled={!name.trim()}
+        >
+          Continue
+        </button>
+      </div>
+    );
+  }
+
+  if (step === 'animal') {
+    return (
+      <div className={styles.container}>
+        <div className={styles.content}>
+          <label htmlFor="animal" className={styles.label}>
+            enter an animal that starts with B
+          </label>
+          <input
+            id="animal"
+            type="text"
+            value={animal}
+            onChange={(e) => setAnimal(e.target.value)}
+            className={styles.input}
+            placeholder="bear, bird, butterfly..."
+          />
+        </div>
+        <button
+          type="button"
+          onClick={handleAnimalContinue}
+          className={styles.submitButton}
+          disabled={!animal.trim() || !animal.toLowerCase().startsWith('b')}
         >
           Continue
         </button>

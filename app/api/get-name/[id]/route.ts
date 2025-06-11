@@ -13,13 +13,13 @@ export async function GET(
     }
     
     // Get the name from KV store
-    const name = await kv.get(`name_${id}`);
+    const gameData = await kv.get(`game_${id}`);
     
-    if (!name) {
-      return NextResponse.json({ error: 'Name not found' }, { status: 404 });
+    if (!gameData) {
+      return NextResponse.json({ error: 'Game not found' }, { status: 404 });
     }
     
-    return NextResponse.json({ name });
+    return NextResponse.json(gameData);
   } catch (error) {
     console.error('Error getting name:', error);
     return NextResponse.json({ error: 'Failed to get name' }, { status: 500 });

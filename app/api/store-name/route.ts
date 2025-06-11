@@ -3,14 +3,14 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const { id, name } = await request.json();
+    const { id, name, animal } = await request.json();
     
-    if (!id || !name) {
-      return NextResponse.json({ error: 'ID and name are required' }, { status: 400 });
+    if (!id || !name || !animal) {
+      return NextResponse.json({ error: 'ID, name and animal are required' }, { status: 400 });
     }
     
-    // Store the name with the ID as key
-    await kv.set(`name_${id}`, name);
+    // Store the game data with the ID as key
+    await kv.set(`game_${id}`, { name, animal });
     
     return NextResponse.json({ success: true });
   } catch (error) {
