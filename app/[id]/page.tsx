@@ -154,99 +154,77 @@ export default function NamePage() {
   }
 
   if (step === 'result') {
-    const getScoreReasonClass = (reason: string) => {
-      if (reason.includes('Different')) return styles.unique;
-      if (reason.includes('Same')) return styles.same;
-      if (reason.includes('empty') || reason.includes('Only')) return styles.noAnswer;
-      return '';
-    };
+    const player1Score = gameData?.results?.player1Score || 0;
+    const player2Score = gameData?.results?.player2Score || 0;
+    const player1Name = gameData?.player1.name || '';
+    const player2Name = friendName;
 
-    const getScoreReasonText = (reason: string) => {
-      if (reason.includes('Different')) return 'unique';
-      if (reason.includes('Same')) return 'same';
-      if (reason.includes('empty')) return 'no answer';
-      if (reason.includes('Only Player 1')) return 'only you';
-      if (reason.includes('Only Player 2')) return 'only friend';
-      return reason.toLowerCase();
-    };
+    const categories = [
+      { name: 'Boy Name', field: 'boyName' as keyof PlayerAnswers },
+      { name: 'Girl Name', field: 'girlName' as keyof PlayerAnswers },
+      { name: 'Animal', field: 'animal' as keyof PlayerAnswers },
+      { name: 'Place', field: 'place' as keyof PlayerAnswers },
+      { name: 'Thing', field: 'thing' as keyof PlayerAnswers },
+      { name: 'Movie', field: 'movie' as keyof PlayerAnswers }
+    ];
 
     return (
-      <main className={styles.main}>
-        <div className={styles.resultsContainer}>
-          {error && <p className={styles.error}>{error}</p>}
-          
-          <div className={styles.scoreHeader}>
-            {(() => {
-              const player1Score = gameData?.results?.player1Score || 0;
-              const player2Score = gameData?.results?.player2Score || 0;
-              
-              if (player1Score > player2Score) {
-                return (
-                  <h1 className={styles.scoreTitle}>
-                    {gameData?.player1.name} Wins! {player1Score} points
-                  </h1>
-                );
-              } else if (player2Score > player1Score) {
-                return (
-                  <h1 className={styles.scoreTitle}>
-                    {friendName} Wins! {player2Score} points
-                  </h1>
-                );
-              } else {
-                return (
-                  <h1 className={styles.scoreTitle}>
-                    It's a Tie! {player1Score} points each
-                  </h1>
-                );
-              }
-            })()}
-            <p className={styles.scoreSubtitle}>
-              {gameData?.player1.name}: {gameData?.results?.player1Score || 0} pts • {friendName}: {gameData?.results?.player2Score || 0} pts
-            </p>
+      <div className={styles.resultsPage}>
+        <div className={styles.starsContainer}>
+          <div className={styles.star1}>⭐</div>
+          <div className={styles.star2}>⭐</div>
+          <div className={styles.star3}>⭐</div>
+          <div className={styles.star4}>⭐</div>
+          <div className={styles.star5}>⭐</div>
+        </div>
+        
+        <div className={styles.resultsContent}>
+          <div className={styles.playersContainer}>
+            <div className={styles.player}>
+              <h2 className={styles.playerName}>{player1Name.toUpperCase()}</h2>
+              <p className={styles.playerScore}>Score: {player1Score}</p>
+            </div>
+            <div className={styles.player}>
+              <h2 className={styles.playerName}>{player2Name.toUpperCase()}</h2>
+              <p className={styles.playerScore}>Score: {player2Score}</p>
+            </div>
           </div>
-          
-          <div className={styles.resultsGrid}>
-            {gameData?.results?.breakdown.map((item, index) => {
-              const categories = [
-                { name: 'Boy Name', field: 'boyName' as keyof PlayerAnswers },
-                { name: 'Girl Name', field: 'girlName' as keyof PlayerAnswers },
-                { name: 'Animal', field: 'animal' as keyof PlayerAnswers },
-                { name: 'Place', field: 'place' as keyof PlayerAnswers },
-                { name: 'Thing', field: 'thing' as keyof PlayerAnswers },
-                { name: 'Movie', field: 'movie' as keyof PlayerAnswers }
-              ];
-              
-              const category = categories[index];
-              const player1Answer = gameData?.player1.answers[category.field] || '—';
-              const player2Answer = friendAnswers[category.field] || '—';
+
+          <div className={styles.answersContainer}>
+            {categories.map((category, index) => {
+              const player1Answer = gameData?.player1.answers[category.field] || '';
+              const player2Answer = friendAnswers[category.field] || '';
+              const breakdown = gameData?.results?.breakdown[index];
+              const points = breakdown?.player1Points || 0;
               
               return (
-                <div key={index} className={styles.resultRow}>
-                  <div className={styles.categoryInfo}>
-                    <h3 className={styles.categoryName}>{item.category}</h3>
-                    <p className={styles.answersComparison}>
-                      {gameData?.player1.name}: {player1Answer} • {friendName}: {player2Answer}
-                    </p>
+                <div key={category.field} className={styles.answerRow}>
+                  <div className={styles.answerLeft}>
+                    <div className={styles.answerBox}>
+                      {player1Answer.toUpperCase()}
+                    </div>
+                    <div className={styles.scoreBox}>
+                      +{points}
+                    </div>
                   </div>
-                  <div className={styles.scoreInfo}>
-                    <p className={`${styles.scoreReason} ${getScoreReasonClass(item.reason)}`}>
-                      {getScoreReasonText(item.reason)} {item.player2Points} pts
-                    </p>
+                  <div className={styles.answerRight}>
+                    <div className={styles.answerBox}>
+                      {player2Answer.toUpperCase()}
+                    </div>
+                    <div className={styles.scoreBox}>
+                      +{breakdown?.player2Points || 0}
+                    </div>
                   </div>
                 </div>
               );
             })}
           </div>
-          
-          <button className={styles.shareButton}>
-            📤 Share your Score
+
+          <button className={styles.shareScoreButton}>
+            SHARE YOUR SCORE
           </button>
-          
-          <p className={styles.nextPuzzle}>
-            Next puzzle in: 7h 24m 2s
-          </p>
         </div>
-      </main>
+      </div>
     );
   }
 
