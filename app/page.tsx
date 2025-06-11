@@ -2,122 +2,137 @@
 
 import { useState } from 'react';
 import styles from './page.module.css';
+import { useGame } from './hooks/useGame';
+import { validateName, validateAllAnswers } from './utils/game';
+import { PlayerAnswers } from './types/game';
 import GameInput from './components/GameInput';
 
 export default function Home() {
   const [name, setName] = useState('');
-  const [animal, setAnimal] = useState('');
-  const [step, setStep] = useState<'input' | 'animal' | 'generated'>('input');
-  const [generatedUrl, setGeneratedUrl] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [answers, setAnswers] = useState<PlayerAnswers>({
+    boyName: '',
+    girlName: '',
+    animal: '',
+    place: '',
+    thing: '',
+    movie: ''
+  });
+  const [step, setStep] = useState<'input' | 'answers' | 'generated'>('input');
+  const [gameUrl, setGameUrl] = useState('');
+  const [error, setError] = useState('');
 
-  const handleContinue = () => {
-    if (name.trim()) {
-      setStep('animal');
+  const { createGame, isLoading } = useGame();
+
+  const handleNameSubmit = async () => {
+    const validation = validateName(name);
+    if (!validation.isValid) {
+      setError(validation.error || 'Invalid name');
+      return;
     }
+    setError('');
+    setStep('answers');
   };
 
-  const handleAnimalContinue = () => {
-    if (animal.trim() && animal.toLowerCase().startsWith('b')) {
-      generateUrl();
-    }
-  };
-
-  const generateUrl = async () => {
-    setIsGenerating(true);
-    const uniqueId = Math.random().toString(36).substring(2, 15);
-    const url = `${window.location.origin}/${uniqueId}`;
-    setGeneratedUrl(url);
+  const handleAnswersSubmit = async () => {
+    const answersValidation = validateAllAnswers(answers);
     
-    try {
-      // Store the name for this URL in the database
-      const response = await fetch('/api/store-name', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id: uniqueId, name, animal }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to store name');
-      }
-      
+    if (!answersValidation.isValid) {
+      setError(answersValidation.error || 'Invalid answers');
+      return;
+    }
+    
+    const result = await createGame(name, answers);
+    
+    if (result.success) {
+      const url = `${window.location.origin}/${result.gameId}`;
+      setGameUrl(url);
       setStep('generated');
-    } catch (error) {
-      console.error('Error storing name:', error);
-      alert('Failed to generate URL. Please try again.');
-    } finally {
-      setIsGenerating(false);
+      setError('');
+    } else {
+      setError(result.error || 'Failed to create game');
     }
   };
 
-  const shareUrl = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Challenge me!',
-          url: generatedUrl,
-        });
-      } catch (err: any) {
-        // Ignore if user cancels share sheet
-        if (err.name !== 'AbortError') {
-          console.error('Failed to share:', err);
-        }
-      }
-    } else {
-      // Fallback to clipboard
-      try {
-        await navigator.clipboard.writeText(generatedUrl);
-        alert('URL copied to clipboard!');
-      } catch (err) {
-        console.error('Failed to copy URL:', err);
-      }
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(gameUrl);
+    } catch (err) {
+      console.error('Failed to copy URL:', err);
     }
   };
+
+  const allAnswersFilled = Object.values(answers).every(answer => answer.trim() !== '');
 
   if (step === 'input') {
     return (
-      <GameInput
-        label="enter ur name"
-        value={name}
-        onChange={setName}
-        placeholder="your name here..."
-        onContinue={handleContinue}
-        buttonText="Continue"
-        disabled={!name.trim()}
-      />
+      <main className={styles.main}>
+        <div className={styles.container}>
+          <div className={styles.content}>
+            <label htmlFor="name" className={styles.label}>
+              What's your name?
+            </label>
+            <input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className={styles.input}
+              placeholder="Enter your name"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={handleNameSubmit}
+            className={styles.submitButton}
+            disabled={!name.trim() || isLoading}
+          >
+            Continue
+          </button>
+        </div>
+        {error && <p className={styles.error}>{error}</p>}
+      </main>
     );
   }
 
-  if (step === 'animal') {
+  if (step === 'answers') {
     return (
-      <GameInput
-        label="enter an animal that starts with B"
-        value={animal}
-        onChange={setAnimal}
-        placeholder="type here..."
-        onContinue={handleAnimalContinue}
-        buttonText="Continue"
-        disabled={!animal.trim() || !animal.toLowerCase().startsWith('b')}
-      />
+      <main className={styles.main}>
+        <GameInput
+          answers={answers}
+          onChange={setAnswers}
+          onContinue={handleAnswersSubmit}
+          buttonText="Create Game"
+          disabled={!allAnswersFilled || isLoading}
+        />
+        {error && <p className={styles.error}>{error}</p>}
+      </main>
     );
   }
-
-
 
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
-        <h1 className={styles.displayName}>challenge your friend</h1>
+    <main className={styles.main}>
+      <div className={styles.container}>
+        <div className={styles.content}>
+          <h1 className={styles.title}>Game Created!</h1>
+          <p className={styles.description}>
+            Send this link to your friend:
+          </p>
+          <div className={styles.urlContainer}>
+            <input
+              type="text"
+              value={gameUrl}
+              readOnly
+              className={styles.urlInput}
+            />
+            <button
+              onClick={copyToClipboard}
+              className={styles.copyButton}
+            >
+              Copy
+            </button>
+          </div>
+        </div>
       </div>
-      <button
-        type="button"
-        onClick={shareUrl}
-        className={styles.submitButton}
-      >
-        send to friend
-      </button>
-    </div>
+    </main>
   );
 }
