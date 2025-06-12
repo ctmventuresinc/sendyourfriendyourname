@@ -7,6 +7,7 @@ interface GameInputProps {
   onContinue: () => void;
   buttonText: string;
   disabled?: boolean;
+  buttonVariant?: 'continue' | 'skip';
 }
 
 export default function GameInput({
@@ -15,7 +16,8 @@ export default function GameInput({
   onChange,
   onContinue,
   buttonText,
-  disabled = false
+  disabled = false,
+  buttonVariant = 'continue'
 }: GameInputProps) {
   return (
     <div className={styles.container}>
@@ -40,7 +42,7 @@ export default function GameInput({
       <button
         type="button"
         onClick={onContinue}
-        className={styles.submitButton}
+        className={`${styles.submitButton} ${buttonVariant === 'skip' ? styles.skipButton : styles.continueButton}`}
         disabled={disabled}
       >
         {buttonText}

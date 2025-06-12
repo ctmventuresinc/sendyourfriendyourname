@@ -335,6 +335,7 @@ export default function Home() {
           onContinue={handleAnswerSubmit}
           buttonText={buttonText}
           disabled={isLoading}
+          buttonVariant={hasAnswer ? 'continue' : 'skip'}
         />
         {error && <p className={styles.error}>{error}</p>}
       </main>

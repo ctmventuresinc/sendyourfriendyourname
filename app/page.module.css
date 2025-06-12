@@ -316,35 +316,67 @@
   right: 0;
   height: 60px;
   margin: 20px;
-  background: #007aff;
-  color: white;
   border: none;
   border-radius: 16px;
   font-size: 18px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
   /* Safe area insets for iPhone notch/home indicator */
   padding-bottom: env(safe-area-inset-bottom);
   margin-bottom: calc(20px + env(safe-area-inset-bottom));
-}
-
-.submitButton:hover:not(:disabled) {
-  background: #0056b3;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(0, 122, 255, 0.4);
-}
-
-.submitButton:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: 0 2px 15px rgba(0, 122, 255, 0.3);
 }
 
 .submitButton:disabled {
   background: #cccccc;
   cursor: not-allowed;
   box-shadow: none;
+}
+
+.continueButton {
+  background: #8b5cf6;
+  color: white;
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+}
+
+.continueButton:hover:not(:disabled) {
+  background: #7c3aed;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(139, 92, 246, 0.4);
+}
+
+.continueButton:active:not(:disabled) {
+  background: #7c3aed;
+  transform: translateY(0);
+  box-shadow: 0 2px 15px rgba(139, 92, 246, 0.3);
+}
+
+.continueButton:focus {
+  outline: none;
+  background: #8b5cf6;
+}
+
+.skipButton {
+  background: #9ca3af;
+  color: #1f2937;
+  box-shadow: 0 4px 20px rgba(156, 163, 175, 0.3);
+}
+
+.skipButton:hover:not(:disabled) {
+  background: #6b7280;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(156, 163, 175, 0.4);
+}
+
+.skipButton:active:not(:disabled) {
+  background: #6b7280;
+  transform: translateY(0);
+  box-shadow: 0 2px 15px rgba(156, 163, 175, 0.3);
+}
+
+.skipButton:focus {
+  outline: none;
+  background: #9ca3af;
 }
 
 
