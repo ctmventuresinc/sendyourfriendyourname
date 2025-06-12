@@ -92,10 +92,10 @@ export function calculateScore(
     if (!p1Answer && !p2Answer) {
       reason = 'Both empty';
     } else if (!p1Answer) {
-      p2Points = 5;
+      p2Points = 10;
       reason = 'Only Player 2 answered';
     } else if (!p2Answer) {
-      p1Points = 5;
+      p1Points = 10;
       reason = 'Only Player 1 answered';
     } else if (p1Answer === p2Answer) {
       p1Points = 5;
