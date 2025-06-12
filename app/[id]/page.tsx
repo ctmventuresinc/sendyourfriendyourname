@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import styles from '../page.module.css';
 import GameInput from '../components/GameInput';
+import ResultsPage from '../components/ResultsPage';
 import { useGame } from '../hooks/useGame';
 import { validateName, validateAnswer } from '../utils/game';
 import { GameData, PlayerAnswers } from '../types/game';
@@ -220,72 +221,24 @@ export default function NamePage() {
     const player1Name = gameData?.player1.name || '';
     const player2Name = friendName;
 
-    const categories = [
-      { name: 'Boy Name', field: 'boyName' as keyof PlayerAnswers },
-      { name: 'Girl Name', field: 'girlName' as keyof PlayerAnswers },
-      { name: 'Animal', field: 'animal' as keyof PlayerAnswers },
-      { name: 'Place', field: 'place' as keyof PlayerAnswers },
-      { name: 'Thing', field: 'thing' as keyof PlayerAnswers },
-      { name: 'Movie', field: 'movie' as keyof PlayerAnswers }
-    ];
-
     return (
-      <div className={styles.resultsPage}>
-        <div className={styles.starsContainer}>
-          <div className={styles.star1}>⭐</div>
-          <div className={styles.star2}>⭐</div>
-          <div className={styles.star3}>⭐</div>
-          <div className={styles.star4}>⭐</div>
-          <div className={styles.star5}>⭐</div>
-        </div>
-        
-        <div className={styles.resultsContent}>
-          <div className={styles.playersContainer}>
-            <div className={styles.player}>
-              <h2 className={styles.playerName}>{player1Name.toUpperCase()}</h2>
-              <p className={styles.playerScore}>Score: {player1Score}</p>
-            </div>
-            <div className={styles.player}>
-              <h2 className={styles.playerName}>{player2Name.toUpperCase()}</h2>
-              <p className={styles.playerScore}>Score: {player2Score}</p>
-            </div>
-          </div>
-
-          <div className={styles.answersContainer}>
-            {categories.map((category, index) => {
-              const player1Answer = gameData?.player1.answers[category.field] || '';
-              const player2Answer = friendAnswers[category.field] || '';
-              const breakdown = gameData?.results?.breakdown[index];
-              const points = breakdown?.player1Points || 0;
-              
-              return (
-                <div key={category.field} className={styles.answerRow}>
-                  <div className={styles.answerLeft}>
-                    <div className={styles.answerBox}>
-                      {player1Answer.toUpperCase()}
-                    </div>
-                    <div className={styles.scoreBox}>
-                      +{points}
-                    </div>
-                  </div>
-                  <div className={styles.answerRight}>
-                    <div className={styles.answerBox}>
-                      {player2Answer.toUpperCase()}
-                    </div>
-                    <div className={styles.scoreBox}>
-                      +{breakdown?.player2Points || 0}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <button className={styles.shareScoreButton}>
-            SHARE YOUR SCORE
-          </button>
-        </div>
-      </div>
+      <ResultsPage
+        player1Name={player1Name}
+        player1Score={player1Score}
+        player1Answers={gameData?.player1.answers || {
+          boyName: '',
+          girlName: '',
+          animal: '',
+          place: '',
+          thing: '',
+          movie: ''
+        }}
+        player2Name={player2Name}
+        player2Score={player2Score}
+        player2Answers={friendAnswers}
+        isWaiting={false}
+        breakdown={gameData?.results?.breakdown}
+      />
     );
   }
 
