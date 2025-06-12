@@ -165,6 +165,12 @@ export default function ResultsPage({
     { name: 'Movie', field: 'movie' as keyof PlayerAnswers }
   ];
 
+  // Determine winner and score difference
+  const numericScore1 = typeof player1Score === 'string' ? parseInt(player1Score) || 0 : player1Score;
+  const numericScore2 = typeof player2Score === 'string' ? parseInt(player2Score) || 0 : player2Score;
+  const isPlayer1Winner = numericScore1 > numericScore2;
+  const isTie = numericScore1 === numericScore2;
+
   return (
     <div className={styles.resultsPage}>
       {showToast && (
@@ -181,14 +187,25 @@ export default function ResultsPage({
       </div>
       
       <div className={styles.resultsContent}>
-        <div className={styles.playersContainer}>
-          <div className={styles.player}>
-            <h2 className={styles.playerName}>{player1Name.toUpperCase()}</h2>
-            <p className={styles.playerScore}>Score: {player1Score}</p>
+        <div className={styles.headToHeadContainer}>
+          <div className={`${styles.playerColumn} ${isPlayer1Winner && !isTie ? styles.winner : ''}`}>
+            <div className={styles.playerHeader}>
+              {isPlayer1Winner && !isTie && <div className={styles.crown}>👑</div>}
+              <h2 className={styles.playerName}>{player1Name.toUpperCase()}</h2>
+              <div className={styles.finalScore}>{player1Score}</div>
+            </div>
           </div>
-          <div className={styles.player}>
-            <h2 className={styles.playerName}>{player2Name.toUpperCase()}</h2>
-            <p className={styles.playerScore}>Score: {player2Score}</p>
+          
+          <div className={styles.vsSection}>
+            <div className={styles.vsText}>VS</div>
+          </div>
+          
+          <div className={`${styles.playerColumn} ${!isPlayer1Winner && !isTie ? styles.winner : ''}`}>
+            <div className={styles.playerHeader}>
+              {!isPlayer1Winner && !isTie && <div className={styles.crown}>👑</div>}
+              <h2 className={styles.playerName}>{player2Name.toUpperCase()}</h2>
+              <div className={styles.finalScore}>{player2Score}</div>
+            </div>
           </div>
         </div>
 
@@ -199,28 +216,41 @@ export default function ResultsPage({
           </div>
         )}
 
-        <div className={styles.answersContainer}>
+        <div className={styles.roundsContainer}>
           {categories.map((category, index) => {
             const player1Answer = player1Answers[category.field] || '';
             const player2Answer = player2Answers?.[category.field] || '';
             const points1 = breakdown?.[index]?.player1Points || (isWaiting ? (player1Answer ? '?' : '0') : '0');
             const points2 = breakdown?.[index]?.player2Points || (isWaiting ? '?' : '0');
             
+            // Determine round winner
+            const numericPoints1 = typeof points1 === 'string' ? (points1 === '?' ? 0 : parseInt(points1) || 0) : points1;
+            const numericPoints2 = typeof points2 === 'string' ? (points2 === '?' ? 0 : parseInt(points2) || 0) : points2;
+            const isRoundTie = numericPoints1 === numericPoints2;
+            const isPlayer1RoundWinner = numericPoints1 > numericPoints2;
+            
             return (
-              <div key={category.field} className={styles.answerRow}>
-                <div className={styles.answerLeft}>
-                  <div className={styles.answerBox}>
-                    {player1Answer.toUpperCase()}
+              <div key={category.field} className={styles.roundRow}>
+                <div className={`${styles.roundResult} ${isPlayer1RoundWinner && !isRoundTie ? styles.roundWinner : isRoundTie ? styles.roundTie : styles.roundLoser}`}>
+                  <div className={styles.answerText}>
+                    {player1Answer.trim() === '' ? 'NO ANSWER' : player1Answer.toUpperCase()}
                   </div>
-                  <div className={styles.scoreBox}>
+                  <div className={styles.scoreText}>
                     {typeof points1 === 'string' ? points1 : `+${points1}`}
                   </div>
-                </div>
-                <div className={styles.answerRight}>
-                  <div className={`${styles.answerBox} ${isWaiting ? styles.unknownAnswer : ''}`}>
-                    {isWaiting ? '???' : player2Answer.toUpperCase()}
+                  <div className={styles.roundIndicator}>
+                    {!isWaiting && (isPlayer1RoundWinner && !isRoundTie ? '🟢' : isRoundTie ? '🟡' : '🔴')}
                   </div>
-                  <div className={`${styles.scoreBox} ${isWaiting ? styles.unknownScore : ''}`}>
+                </div>
+                
+                <div className={`${styles.roundResult} ${!isPlayer1RoundWinner && !isRoundTie ? styles.roundWinner : isRoundTie ? styles.roundTie : styles.roundLoser}`}>
+                  <div className={styles.roundIndicator}>
+                    {!isWaiting && (!isPlayer1RoundWinner && !isRoundTie ? '🟢' : isRoundTie ? '🟡' : '🔴')}
+                  </div>
+                  <div className={styles.answerText}>
+                    {isWaiting ? '???' : (player2Answer?.trim() === '' ? 'NO ANSWER' : player2Answer.toUpperCase())}
+                  </div>
+                  <div className={styles.scoreText}>
                     {typeof points2 === 'string' ? `+${points2}` : `+${points2}`}
                   </div>
                 </div>
