@@ -283,29 +283,32 @@
 }
 
 .label {
-  font-size: 28px;
-  font-weight: 700;
+  font-size: 42px;
+  font-weight: 900;
   text-align: center;
   color: #1f2937;
-  margin-bottom: 40px;
+  margin-bottom: 60px;
+  line-height: 1.1;
 }
 
 .input {
   width: 100%;
-  max-width: 400px;
-  padding: 20px 24px;
-  font-size: 18px;
+  max-width: 600px;
+  padding: 28px 32px;
+  font-size: 22px;
   border: none;
   border-radius: 50px;
   outline: none;
   background: white;
   color: #1f2937;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 7px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  margin-bottom: 16px;
+  height: 80px;
+  box-sizing: border-box;
 }
 
 .input:focus {
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
 }
 
 .input::placeholder {
@@ -387,15 +390,15 @@
 /* Inline button styles */
 .inlineButton {
   width: 100%;
-  max-width: 400px;
-  height: 60px;
+  max-width: 600px;
+  height: 80px;
   border: none;
   border-radius: 50px;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 24px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-bottom: 20px;
+  margin-bottom: 32px;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -411,13 +414,13 @@
 .inlineContinueButton {
   background: #8b5cf6;
   color: white;
-  box-shadow: 0 2px 12px rgba(139, 92, 246, 0.3);
+  box-shadow: 0 6px 24px rgba(139, 92, 246, 0.4);
 }
 
 .inlineContinueButton:hover:not(:disabled) {
   background: #7c3aed;
-  transform: translateY(-1px);
-  box-shadow: 0 3px 15px rgba(139, 92, 246, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(139, 92, 246, 0.5);
 }
 
 .inlineContinueButton:active:not(:disabled) {
@@ -430,13 +433,13 @@
 .inlineSkipButton {
   background: #9ca3af;
   color: #1f2937;
-  box-shadow: 0 2px 12px rgba(156, 163, 175, 0.3);
+  box-shadow: 0 6px 24px rgba(156, 163, 175, 0.4);
 }
 
 .inlineSkipButton:hover:not(:disabled) {
   background: #6b7280;
-  transform: translateY(-1px);
-  box-shadow: 0 3px 15px rgba(156, 163, 175, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(156, 163, 175, 0.5);
 }
 
 .inlineSkipButton:active:not(:disabled) {
@@ -534,22 +537,23 @@
   }
   
   .label {
-    font-size: 24px;
-    margin-bottom: 32px;
+    font-size: 32px;
+    margin-bottom: 48px;
   }
   
   .input {
-    font-size: 16px;
-    padding: 18px 22px;
-    max-width: 350px;
-    margin-bottom: 7px;
+    font-size: 20px;
+    padding: 24px 28px;
+    max-width: 500px;
+    margin-bottom: 12px;
+    height: 72px;
   }
   
   .inlineButton {
-    max-width: 350px;
-    height: 56px;
-    font-size: 17px;
-    margin-bottom: 16px;
+    max-width: 500px;
+    height: 72px;
+    font-size: 20px;
+    margin-bottom: 24px;
   }
   
   .submitButton {
