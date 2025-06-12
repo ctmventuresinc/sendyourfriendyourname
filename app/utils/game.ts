@@ -1,7 +1,7 @@
-import { ValidationResult, GameConfig, PlayerAnswers, GAME_CATEGORIES } from '../types/game';
+import { ValidationResult, GameConfig, PlayerAnswers, GAME_CATEGORIES, GAME_LETTER } from '../types/game';
 
 export const DEFAULT_GAME_CONFIG: GameConfig = {
-  requiredLetter: 'b',
+  requiredLetter: GAME_LETTER.toLowerCase(),
   categories: GAME_CATEGORIES,
   timeLimit: undefined,
   scoringEnabled: true

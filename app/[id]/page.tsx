@@ -8,7 +8,7 @@ import ResultsPage from '../components/ResultsPage';
 import HowToPlay from '../components/HowToPlay';
 import { useGame } from '../hooks/useGame';
 import { validateName, validateAnswer } from '../utils/game';
-import { GameData, PlayerAnswers } from '../types/game';
+import { GameData, PlayerAnswers, GAME_LETTER } from '../types/game';
 
 type Step = 'input' | 'boyName' | 'girlName' | 'animal' | 'place' | 'thing' | 'movie' | 'result';
 
@@ -48,12 +48,12 @@ export default function NamePage() {
   }, [showCountdown, countdown]);
 
   const questions = [
-    { step: 'boyName', label: 'Name a Boy Name That Starts With B', field: 'boyName' as keyof PlayerAnswers },
-    { step: 'girlName', label: 'Name a Girl Name That Starts With B', field: 'girlName' as keyof PlayerAnswers },
-    { step: 'animal', label: 'Name an Animal That Starts With B', field: 'animal' as keyof PlayerAnswers },
-    { step: 'place', label: 'Name a Place That Starts With B', field: 'place' as keyof PlayerAnswers },
-    { step: 'thing', label: 'Name a Thing That Starts With B', field: 'thing' as keyof PlayerAnswers },
-    { step: 'movie', label: 'Name a Movie That Starts With B', field: 'movie' as keyof PlayerAnswers }
+    { step: 'boyName', label: `Name a Boy Name That Starts With ${GAME_LETTER}`, field: 'boyName' as keyof PlayerAnswers },
+    { step: 'girlName', label: `Name a Girl Name That Starts With ${GAME_LETTER}`, field: 'girlName' as keyof PlayerAnswers },
+    { step: 'animal', label: `Name an Animal That Starts With ${GAME_LETTER}`, field: 'animal' as keyof PlayerAnswers },
+    { step: 'place', label: `Name a Place That Starts With ${GAME_LETTER}`, field: 'place' as keyof PlayerAnswers },
+    { step: 'thing', label: `Name a Thing That Starts With ${GAME_LETTER}`, field: 'thing' as keyof PlayerAnswers },
+    { step: 'movie', label: `Name a Movie That Starts With ${GAME_LETTER}`, field: 'movie' as keyof PlayerAnswers }
   ];
 
   useEffect(() => {
