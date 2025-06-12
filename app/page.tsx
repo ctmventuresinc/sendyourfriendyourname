@@ -231,8 +231,8 @@ export default function Home() {
       { name: 'Movie', field: 'movie' as keyof PlayerAnswers }
     ];
 
-    // Calculate player's total score (assuming 10 points for each answer for now)
-    const playerScore = Object.values(answers).filter(answer => answer.trim()).length * 10;
+    // Can't calculate actual score until friend answers - scoring depends on comparison
+    const playerScore = "???";
 
     return (
       <div className={styles.resultsPage}>
@@ -272,7 +272,7 @@ export default function Home() {
                       {playerAnswer.toUpperCase()}
                     </div>
                     <div className={styles.scoreBox}>
-                      +10
+                      {playerAnswer ? '+?' : '0'}
                     </div>
                   </div>
                   <div className={styles.answerRight}>
