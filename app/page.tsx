@@ -113,7 +113,7 @@ export default function Home() {
   const handleSubmitAllAnswers = async () => {
     const finalAnswers = { ...answers };
     const currentQuestion = questions.find(q => q.step === step);
-    if (currentQuestion) {
+    if (currentQuestion && currentAnswer.trim()) {
       finalAnswers[currentQuestion.field] = currentAnswer;
     }
     
@@ -321,7 +321,7 @@ export default function Home() {
     
     let buttonText;
     if (isLastQuestion) {
-      buttonText = isLoading ? "Creating..." : "Create Game";
+      buttonText = isLoading ? "Loading..." : (hasAnswer ? "Continue" : "Skip");
     } else {
       buttonText = hasAnswer ? "Continue" : "Skip";
     }

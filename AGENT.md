@@ -24,3 +24,8 @@
 - ESLint configuration via Next.js defaults
 - Target ES2017 with modern browser support
 - JSX preserved for Next.js compilation
+
+## Game Development Notes
+- Always ask before implementing new game mechanics or changing existing ones
+- Skipping questions is part of the game - players should be able to skip all questions and get zero points
+- This is intentional game design, not a bug to fix

@@ -13,8 +13,9 @@ export function validateAnswer(
 ): ValidationResult {
   const trimmed = entry.trim();
   
+  // Allow empty entries (skips are part of the game)
   if (!trimmed) {
-    return { isValid: false, error: 'Entry cannot be empty' };
+    return { isValid: true };
   }
   
   if (!trimmed.toLowerCase().startsWith(requiredLetter.toLowerCase())) {
