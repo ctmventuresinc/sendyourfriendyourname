@@ -25,7 +25,7 @@ export default function Home() {
   const [currentAnswer, setCurrentAnswer] = useState('');
   const [showHowToPlay, setShowHowToPlay] = useState(true);
   const [showCountdown, setShowCountdown] = useState(false);
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(3);
 
   const { createGame, isLoading } = useGame();
 
@@ -38,7 +38,7 @@ export default function Home() {
     } else if (showCountdown && countdown === 0) {
       setShowCountdown(false);
       setStep('boyName');
-      setCountdown(5); // Reset for next time
+      setCountdown(3); // Reset for next time
     }
   }, [showCountdown, countdown]);
 
@@ -63,6 +63,28 @@ export default function Home() {
   };
 
   const handleAnswerSubmit = () => {
+    // If there's no current answer, treat as skip
+    if (!currentAnswer.trim()) {
+      const currentQuestion = questions.find(q => q.step === step);
+      if (currentQuestion) {
+        setAnswers(prev => ({
+          ...prev,
+          [currentQuestion.field]: ''
+        }));
+      }
+      
+      setError('');
+      setCurrentAnswer('');
+      
+      const currentIndex = questions.findIndex(q => q.step === step);
+      if (currentIndex < questions.length - 1) {
+        setStep(questions[currentIndex + 1].step as Step);
+      } else {
+        handleSubmitAllAnswers();
+      }
+      return;
+    }
+
     const validation = validateAnswer(currentAnswer);
     if (!validation.isValid) {
       setError(validation.error || 'Invalid answer');
@@ -295,6 +317,14 @@ export default function Home() {
   const currentQuestion = questions.find(q => q.step === step);
   if (currentQuestion) {
     const isLastQuestion = questions.findIndex(q => q.step === step) === questions.length - 1;
+    const hasAnswer = currentAnswer.trim();
+    
+    let buttonText;
+    if (isLastQuestion) {
+      buttonText = isLoading ? "Creating..." : "Create Game";
+    } else {
+      buttonText = hasAnswer ? "Continue" : "Skip";
+    }
     
     return (
       <main className={styles.main}>
@@ -303,8 +333,8 @@ export default function Home() {
           value={currentAnswer}
           onChange={setCurrentAnswer}
           onContinue={handleAnswerSubmit}
-          buttonText={isLastQuestion ? (isLoading ? "Creating..." : "Create Game") : "Continue"}
-          disabled={!currentAnswer.trim() || isLoading}
+          buttonText={buttonText}
+          disabled={isLoading}
         />
         {error && <p className={styles.error}>{error}</p>}
       </main>
