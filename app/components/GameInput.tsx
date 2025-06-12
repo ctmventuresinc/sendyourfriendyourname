@@ -27,6 +27,11 @@ export default function GameInput({
   return (
     <div className={styles.container}>
       <div className={styles.content}>
+        {showCountdown && onTimeout && (
+          <div className={styles.countdownContainer}>
+            <GameCountdown onTimeout={onTimeout} />
+          </div>
+        )}
         <label htmlFor="input" className={styles.label}>
           {label}
         </label>
@@ -52,9 +57,6 @@ export default function GameInput({
         >
           {buttonText}
         </button>
-        {showCountdown && onTimeout && (
-          <GameCountdown onTimeout={onTimeout} />
-        )}
       </div>
     </div>
   );
