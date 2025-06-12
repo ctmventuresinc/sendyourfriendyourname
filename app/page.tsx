@@ -7,6 +7,7 @@ import { validateName, validateAnswer } from './utils/game';
 import { PlayerAnswers } from './types/game';
 import GameInput from './components/GameInput';
 import ResultsPage from './components/ResultsPage';
+import HowToPlay from './components/HowToPlay';
 
 type Step = 'input' | 'boyName' | 'girlName' | 'animal' | 'place' | 'thing' | 'movie' | 'generated';
 
@@ -160,50 +161,10 @@ export default function Home() {
             </div>
           </div>
         )}
-        {showHowToPlay && (
-          <div 
-            className={styles.overlay}
-            onClick={() => setShowHowToPlay(false)}
-          >
-            <div 
-              className={styles.modal}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className={styles.modalHeader}>
-                <h2>How to Play</h2>
-                <button 
-                  className={styles.closeButton}
-                  onClick={() => setShowHowToPlay(false)}
-                >
-                  ✕
-                </button>
-              </div>
-              <div className={styles.modalContent}>
-                <ul>
-                  <li><strong>Answer 6 Questions:</strong> You'll be asked to name things that start with the letter "B" - like a boy's name, girl's name, animal, place, thing, and movie.</li>
-                </ul>
-                <div className={styles.scoring}>
-                  <h3>Scoring:</h3>
-                  <div className={styles.scoreItem}>
-                    <span className={styles.uniqueScore}>+10 points</span> for unique answers (you both thought of different things)
-                  </div>
-                  <div className={styles.scoreItem}>
-                    <span className={styles.matchScore}>+5 points</span> for matching answers (great minds think alike!)
-                  </div>
-                  <div className={styles.scoreItem}>
-                    <span className={styles.noScore}>0 points</span> for blank answers
-                  </div>
-                </div>
-                <button 
-                  className={styles.startButton}
-                  onClick={() => setShowHowToPlay(false)}
-                >
-                  Start
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        <HowToPlay 
+          isVisible={showHowToPlay} 
+          onClose={() => setShowHowToPlay(false)} 
+        />
         <main className={styles.main}>
           <GameInput
             label="What's your name?"

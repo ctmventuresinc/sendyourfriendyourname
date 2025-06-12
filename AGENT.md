@@ -29,3 +29,6 @@
 - Always ask before implementing new game mechanics or changing existing ones
 - Skipping questions is part of the game - players should be able to skip all questions and get zero points
 - This is intentional game design, not a bug to fix
+- **IMPORTANT**: The app has two user flows - main game creation (`app/page.tsx`) and friend challenge (`app/[id]/page.tsx`)
+- Any new features, UI components, or game mechanics MUST be shared between both flows using reusable components
+- Never duplicate code between the two pages - create shared components in `app/components/` instead

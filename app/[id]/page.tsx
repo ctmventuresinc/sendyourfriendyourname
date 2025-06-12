@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import styles from '../page.module.css';
 import GameInput from '../components/GameInput';
 import ResultsPage from '../components/ResultsPage';
+import HowToPlay from '../components/HowToPlay';
 import { useGame } from '../hooks/useGame';
 import { validateName, validateAnswer } from '../utils/game';
 import { GameData, PlayerAnswers } from '../types/game';
@@ -29,6 +30,7 @@ export default function NamePage() {
   const [error, setError] = useState('');
   const [showCountdown, setShowCountdown] = useState(false);
   const [countdown, setCountdown] = useState(3);
+  const [showHowToPlay, setShowHowToPlay] = useState(true);
 
   const { isLoading, joinGame } = useGame();
 
@@ -178,6 +180,10 @@ export default function NamePage() {
   if (step === 'input') {
     return (
       <>
+        <HowToPlay 
+          isVisible={showHowToPlay} 
+          onClose={() => setShowHowToPlay(false)} 
+        />
         {showCountdown && (
           <div 
             className={styles.countdownOverlay}
