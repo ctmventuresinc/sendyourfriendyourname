@@ -37,16 +37,17 @@ export default function GameInput({
           }}
           className={styles.input}
           placeholder="type here..."
+          enterKeyHint="done"
         />
+        <button
+          type="button"
+          onClick={onContinue}
+          className={`${styles.inlineButton} ${buttonVariant === 'skip' ? styles.inlineSkipButton : styles.inlineContinueButton}`}
+          disabled={disabled}
+        >
+          {buttonText}
+        </button>
       </div>
-      <button
-        type="button"
-        onClick={onContinue}
-        className={`${styles.submitButton} ${buttonVariant === 'skip' ? styles.skipButton : styles.continueButton}`}
-        disabled={disabled}
-      >
-        {buttonText}
-      </button>
     </div>
   );
 }
