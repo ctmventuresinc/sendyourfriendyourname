@@ -347,26 +347,7 @@
   box-shadow: none;
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .input {
-    border-color: #333;
-    background: #1a1a1a;
-    color: white;
-  }
-  
-  .input:focus {
-    border-color: #007aff;
-  }
-  
-  .input::placeholder {
-    color: #666;
-  }
-  
-  .submitButton:disabled {
-    background: #444;
-  }
-}
+
 
 .displayName {
   font-size: 48px;
@@ -420,14 +401,7 @@
   background: #0056b3;
 }
 
-/* Dark mode for new styles */
-@media (prefers-color-scheme: dark) {
-  .urlInput {
-    border-color: #333;
-    background: #1a1a1a;
-    color: white;
-  }
-}
+
 
 /* Mobile optimizations for new styles */
 @media (max-width: 600px) {
@@ -641,32 +615,7 @@
   color: #666;
 }
 
-/* Dark mode for results */
-@media (prefers-color-scheme: dark) {
-  .resultRow {
-    border-bottom-color: #333;
-  }
-  
-  .scoreSubtitle {
-    color: #999;
-  }
-  
-  .categoryName {
-    color: #999;
-  }
-  
-  .scorePoints {
-    color: #999;
-  }
-  
-  .nextPuzzle {
-    color: #999;
-  }
-  
-  .description {
-    color: #999;
-  }
-}
+
 
 /* Mobile optimizations for results */
 @media (max-width: 600px) {
