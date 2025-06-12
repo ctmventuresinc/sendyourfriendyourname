@@ -188,24 +188,20 @@ export default function ResultsPage({
       
       <div className={styles.resultsContent}>
         <div className={styles.headToHeadContainer}>
-          <div className={`${styles.playerColumn} ${isPlayer1Winner && !isTie ? styles.winner : ''}`}>
-            <div className={styles.playerHeader}>
-              {isPlayer1Winner && !isTie && <div className={styles.crown}>👑</div>}
-              <h2 className={styles.playerName}>{player1Name.toUpperCase()}</h2>
-              <div className={styles.finalScore}>{player1Score}</div>
-            </div>
+          <div className={`${styles.playerCard} ${!isWaiting && isPlayer1Winner && !isTie ? styles.winnerCard : ''}`}>
+            {!isWaiting && isPlayer1Winner && !isTie && <div className={styles.crown}>👑</div>}
+            <h2 className={styles.cardPlayerName}>{player1Name.toUpperCase()}</h2>
+            <div className={styles.cardScore}>{player1Score}</div>
           </div>
           
           <div className={styles.vsSection}>
             <div className={styles.vsText}>VS</div>
           </div>
           
-          <div className={`${styles.playerColumn} ${!isPlayer1Winner && !isTie ? styles.winner : ''}`}>
-            <div className={styles.playerHeader}>
-              {!isPlayer1Winner && !isTie && <div className={styles.crown}>👑</div>}
-              <h2 className={styles.playerName}>{player2Name.toUpperCase()}</h2>
-              <div className={styles.finalScore}>{player2Score}</div>
-            </div>
+          <div className={`${styles.playerCard} ${!isWaiting && !isPlayer1Winner && !isTie ? styles.winnerCard : styles.loserCard}`}>
+            {!isWaiting && !isPlayer1Winner && !isTie && <div className={styles.crown}>👑</div>}
+            <h2 className={styles.cardPlayerName}>{player2Name.toUpperCase()}</h2>
+            <div className={styles.cardScore}>{player2Score}</div>
           </div>
         </div>
 
@@ -216,43 +212,55 @@ export default function ResultsPage({
           </div>
         )}
 
-        <div className={styles.roundsContainer}>
+        <div className={styles.answersGrid}>
           {categories.map((category, index) => {
             const player1Answer = player1Answers[category.field] || '';
             const player2Answer = player2Answers?.[category.field] || '';
             const points1 = breakdown?.[index]?.player1Points || (isWaiting ? (player1Answer ? '?' : '0') : '0');
             const points2 = breakdown?.[index]?.player2Points || (isWaiting ? '?' : '0');
             
-            // Determine round winner
+            // Determine round winner for styling
             const numericPoints1 = typeof points1 === 'string' ? (points1 === '?' ? 0 : parseInt(points1) || 0) : points1;
             const numericPoints2 = typeof points2 === 'string' ? (points2 === '?' ? 0 : parseInt(points2) || 0) : points2;
             const isRoundTie = numericPoints1 === numericPoints2;
             const isPlayer1RoundWinner = numericPoints1 > numericPoints2;
             
+            // Get styling classes
+            const getAnswerClass = (isWinner: boolean, isTie: boolean, hasAnswer: boolean) => {
+              if (isWaiting) return styles.waitingAnswer;
+              if (!hasAnswer) return styles.noAnswerBox;
+              if (isWinner && !isTie) return styles.winnerAnswer;
+              if (isTie) return styles.tieAnswer;
+              return styles.normalAnswer;
+            };
+            
+            const player1HasAnswer = player1Answer.trim() !== '';
+            const player2HasAnswer = !isWaiting && player2Answer?.trim() !== '';
+            
             return (
-              <div key={category.field} className={styles.roundRow}>
-                <div className={`${styles.roundResult} ${isPlayer1RoundWinner && !isRoundTie ? styles.roundWinner : isRoundTie ? styles.roundTie : styles.roundLoser}`}>
-                  <div className={styles.answerText}>
+              <div key={category.field} className={styles.answerRowGrid}>
+                <div className={getAnswerClass(isPlayer1RoundWinner, isRoundTie, player1HasAnswer)}>
+                  <span className={styles.answerText}>
                     {player1Answer.trim() === '' ? 'NO ANSWER' : player1Answer.toUpperCase()}
-                  </div>
-                  <div className={styles.scoreText}>
-                    {typeof points1 === 'string' ? points1 : `+${points1}`}
-                  </div>
+                  </span>
+                  <span className={styles.scoreText}>
+                    {typeof points1 === 'string' ? (points1 === '?' ? '+?' : points1) : `+${points1}`}
+                  </span>
                   <div className={styles.roundIndicator}>
-                    {!isWaiting && (isPlayer1RoundWinner && !isRoundTie ? '🟢' : isRoundTie ? '🟡' : '🔴')}
+                    {!isWaiting && player1HasAnswer && (isPlayer1RoundWinner && !isRoundTie ? '🟢' : isRoundTie ? '🟡' : player1HasAnswer ? '🟡' : '🔴')}
                   </div>
                 </div>
                 
-                <div className={`${styles.roundResult} ${!isPlayer1RoundWinner && !isRoundTie ? styles.roundWinner : isRoundTie ? styles.roundTie : styles.roundLoser}`}>
+                <div className={getAnswerClass(!isPlayer1RoundWinner, isRoundTie, player2HasAnswer)}>
                   <div className={styles.roundIndicator}>
-                    {!isWaiting && (!isPlayer1RoundWinner && !isRoundTie ? '🟢' : isRoundTie ? '🟡' : '🔴')}
+                    {!isWaiting && player2HasAnswer && (!isPlayer1RoundWinner && !isRoundTie ? '🟢' : isRoundTie ? '🟡' : player2HasAnswer ? '🟡' : '🔴')}
                   </div>
-                  <div className={styles.answerText}>
+                  <span className={styles.answerText}>
                     {isWaiting ? '???' : (player2Answer?.trim() === '' ? 'NO ANSWER' : player2Answer.toUpperCase())}
-                  </div>
-                  <div className={styles.scoreText}>
+                  </span>
+                  <span className={styles.scoreText}>
                     {typeof points2 === 'string' ? `+${points2}` : `+${points2}`}
-                  </div>
+                  </span>
                 </div>
               </div>
             );
