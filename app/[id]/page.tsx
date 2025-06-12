@@ -270,6 +270,8 @@ export default function NamePage() {
           buttonText={buttonText}
           disabled={isLoading}
           buttonVariant={hasAnswer ? 'continue' : 'skip'}
+          showCountdown={true}
+          onTimeout={handleSubmitAllAnswers}
         />
         {error && <p className={styles.error}>{error}</p>}
       </main>

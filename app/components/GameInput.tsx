@@ -1,4 +1,5 @@
 import styles from '../page.module.css';
+import GameCountdown from './GameCountdown';
 
 interface GameInputProps {
   label: string;
@@ -8,6 +9,8 @@ interface GameInputProps {
   buttonText: string;
   disabled?: boolean;
   buttonVariant?: 'continue' | 'skip';
+  showCountdown?: boolean;
+  onTimeout?: () => void;
 }
 
 export default function GameInput({
@@ -17,7 +20,9 @@ export default function GameInput({
   onContinue,
   buttonText,
   disabled = false,
-  buttonVariant = 'continue'
+  buttonVariant = 'continue',
+  showCountdown = false,
+  onTimeout
 }: GameInputProps) {
   return (
     <div className={styles.container}>
@@ -47,6 +52,9 @@ export default function GameInput({
         >
           {buttonText}
         </button>
+        {showCountdown && onTimeout && (
+          <GameCountdown onTimeout={onTimeout} />
+        )}
       </div>
     </div>
   );
