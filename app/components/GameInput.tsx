@@ -1,6 +1,17 @@
 import styles from '../page.module.css';
 import GameCountdown from './GameCountdown';
 
+function formatLabelWithPurpleCategory(label: string): string {
+  // Extract category (first part before "That Starts With")
+  const match = label.match(/^([^T]+)\s*That Starts With/);
+  if (match) {
+    const category = match[1].trim();
+    const rest = label.replace(match[0], 'That Starts With');
+    return `<span style="color: #8b5cf6;">${category}</span> ${rest}`;
+  }
+  return label;
+}
+
 interface GameInputProps {
   label: string;
   value: string;
@@ -33,7 +44,7 @@ export default function GameInput({
           </div>
         )}
         <label htmlFor="input" className={styles.label}>
-          {label}
+          <span dangerouslySetInnerHTML={{ __html: formatLabelWithPurpleCategory(label) }} />
         </label>
         <input
           id="input"
